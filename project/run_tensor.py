@@ -11,7 +11,21 @@ def RParam(*shape):
     r = 2 * (minitorch.rand(shape) - 0.5)
     return minitorch.Parameter(r)
 
-# TODO: Implement for Task 2.5.
+# Define the neural network
+class Network(minitorch.Module):
+    def __init__(self, hidden_size):
+        super().__init__()
+        # Initialize parameters for three linear layers
+        self.layer1 = RParam(2, hidden_size)
+        self.layer2 = RParam(hidden_size, hidden_size)
+        self.layer3 = RParam(hidden_size, 1)
+
+    def forward(self, x):
+        # Forward pass through the three layers
+        x = x @ self.layer1.value.relu()  # Input -> Hidden 1 with ReLU
+        x = x @ self.layer2.value.relu()  # Hidden 1 -> Hidden 2 with ReLU
+        x = x @ self.layer3.value.sigmoid()  # Hidden 2 -> Output with Sigmoid
+        return x
 
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)
