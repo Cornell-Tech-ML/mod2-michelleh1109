@@ -52,7 +52,26 @@ class TensorOps:
     @staticmethod
     def matrix_multiply(a: Tensor, b: Tensor) -> Tensor:
         """Matrix multiply"""
-        raise NotImplementedError("Not implemented in this assignment")
+        assert a.dims == 2 and b.dims == 2, "Both tensors must be 2D for matrix multiplication."
+        assert a.shape[1] == b.shape[0], "Incompatible dimensions for matrix multiplication."
+
+        m, n = a.shape
+        n, p = b.shape
+
+        # Prepare the output tensor with shape (m, p)
+        out = a.zeros((m, p))
+
+        # Expand dimensions for broadcasting
+        a_expanded = a.view(m, 1, n)  # Shape: (m, 1, n)
+        b_expanded = b.view(1, n, p)  # Shape: (1, n, p)
+
+        # Element-wise multiplication
+        multiplied = a.f.mul_zip(a_expanded, b_expanded)
+
+        # Sum over the second dimension (axis=1)
+        out = multiplied.sum(1)
+
+        return out
 
     cuda = False
 
@@ -243,8 +262,7 @@ class SimpleOps(TensorOps):
     @staticmethod
     def matrix_multiply(a: "Tensor", b: "Tensor") -> "Tensor":
         """Matrix multiplication"""
-        raise NotImplementedError("Not implemented in this assignment")
-
+        return TensorOps.matrix_multiply(a,b)
     is_cuda = False
 
 

@@ -114,13 +114,13 @@ class Tensor:
         return c
 
     def item(self) -> float:
-        """Convert a 1-element tensor to a float"""
+        """Convert a 1-element tensor to a float."""
         assert self.size == 1
         x: float = self._tensor._storage[0]
         return x
 
     def contiguous(self) -> Tensor:
-        """Return a contiguous tensor with the same data"""
+        """Return a contiguous tensor with the same data."""
         return Copy.apply(self)
 
     def __repr__(self) -> str:
@@ -191,8 +191,7 @@ class Tensor:
         # END CODE CHANGE (2021)
 
     def zeros(self, shape: Optional[UserShape] = None) -> Tensor:
-        """Creates tensor of sizes from shape input"""
-
+        """Creates tensor of sizes from shape input."""
         def zero(shape: UserShape) -> Tensor:
             return Tensor.make(
                 [0.0] * int(operators.prod(shape)), shape, backend=self.backend
@@ -210,7 +209,7 @@ class Tensor:
         return self._tensor.tuple()
 
     def detach(self) -> Tensor:
-        """Detach from backprop"""
+        """Detach from backprop."""
         return Tensor(self._tensor, backend=self.backend)
 
     # Variable elements for backprop
@@ -280,10 +279,7 @@ class Tensor:
 
     @property
     def shape(self) -> UserShape:
-        """Returns
-        shape of the tensor
-
-        """
+        """Returns shape of the tensor."""
         return self._tensor.shape
 
     @property
