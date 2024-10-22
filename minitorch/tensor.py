@@ -376,11 +376,11 @@ class Tensor:
         """Element-wise 'is close' comparison."""
         return IsClose.apply(self, other)
 
-    def permute(self, *order: int) -> Tensor:  # missing dim arugment!1
+    def permute(self, *order: int) -> Tensor:
         """Permute the dimensions of the tensor according to the given order."""
         return Permute.apply(self, tensor(list(order)))
 
-    def view(self, *shape: int) -> Tensor:  # missing dim arugment!!
+    def view(self, *shape: int) -> Tensor:
         """Return a new tensor with the same data but a different shape."""
         return View.apply(self, tensor(list(shape)))
 
