@@ -52,24 +52,29 @@ class TensorOps:
     @staticmethod
     def matrix_multiply(a: Tensor, b: Tensor) -> Tensor:
         """Matrix multiply"""
-        assert a.dims == 2 and b.dims == 2, "Both tensors must be 2D for matrix multiplication."
-        assert a.shape[1] == b.shape[0], "Incompatible dimensions for matrix multiplication."
+        # Ensure tensors are 2D
+        if len(a.shape) != 2 or len(b.shape) != 2:
+            raise ValueError("Matrix multiplication requires 2D tensors.")
+
+        # Ensure compatible dimensions for matrix multiplication
+        if a.shape[1] != b.shape[0]:
+            raise ValueError(
+                f"Incompatible dimensions: {a.shape} and {b.shape} for matrix multiplication."
+            )
 
         m, n = a.shape
-        n, p = b.shape
+        _, p = b.shape
 
-        # Prepare the output tensor with shape (m, p)
+        # Create an output tensor of shape (m, p)
         out = a.zeros((m, p))
 
-        # Expand dimensions for broadcasting
-        a_expanded = a.view(m, 1, n)  # Shape: (m, 1, n)
-        b_expanded = b.view(1, n, p)  # Shape: (1, n, p)
-
-        # Element-wise multiplication
-        multiplied = a.f.mul_zip(a_expanded, b_expanded)
-
-        # Sum over the second dimension (axis=1)
-        out = multiplied.sum(1)
+        # Perform matrix multiplication using nested loops
+        for i in range(m):  # Iterate over rows of a
+            for j in range(p):  # Iterate over columns of b
+                sum_val = 0.0
+                for k in range(n):  # Iterate over shared dimension
+                    sum_val += a[i, k] * b[k, j]
+                out[i, j] = sum_val
 
         return out
 
@@ -253,16 +258,17 @@ class SimpleOps(TensorOps):
         return ret
 
     @staticmethod
-    def expand(tensor: Tensor, shape: Shape) -> Tensor:
+    def expand(tensor: Tensor, s: Shape) -> Tensor:
         """Expand the input tensor to the given shape by broadcasting."""
-        out = tensor.zeros(shape)
+        out = tensor.zeros(tuple(s))
         tensor.f.id_map(tensor, out)  # Map the values from `tensor` to `out`
         return out
 
     @staticmethod
     def matrix_multiply(a: "Tensor", b: "Tensor") -> "Tensor":
         """Matrix multiplication"""
-        return TensorOps.matrix_multiply(a,b)
+        return TensorOps.matrix_multiply(a, b)
+
     is_cuda = False
 
 

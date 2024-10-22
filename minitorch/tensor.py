@@ -192,6 +192,7 @@ class Tensor:
 
     def zeros(self, shape: Optional[UserShape] = None) -> Tensor:
         """Creates tensor of sizes from shape input."""
+
         def zero(shape: UserShape) -> Tensor:
             return Tensor.make(
                 [0.0] * int(operators.prod(shape)), shape, backend=self.backend
@@ -370,6 +371,7 @@ class Tensor:
 
     def is_close(self, other: TensorLike) -> Tensor:
         """Element-wise 'is close' comparison."""
+        other = self._ensure_tensor(other)
         return IsClose.apply(self, other)
 
     def permute(self, *order: int) -> Tensor:
@@ -386,4 +388,4 @@ class Tensor:
 
     def all(self) -> bool:
         """Returns True if all elements of the tensor are non-zero."""
-        return self.to_numpy().all()
+        return bool(self.to_numpy().all())

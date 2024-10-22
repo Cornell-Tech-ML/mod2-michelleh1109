@@ -148,7 +148,7 @@ def test_view() -> None:
     t2 = t2.view(6, 1)
     assert t2.shape == (6, 1)
     t2 = t2.view(2, 3)
-    assert t.is_close(t2).all().item() == 1.0
+    assert t.is_close(t2).all() == 1.0  # .item() == 1.0
 
 
 @given(tensors())
@@ -200,7 +200,7 @@ def test_reduce_forward_one_dim() -> None:
 
     # shape (2)
     t_sum_expected = tensor([[11, 16]])
-    assert t_summed.is_close(t_sum_expected).all().item()
+    assert t_summed.is_close(t_sum_expected).all()  # .item()
 
 
 @pytest.mark.task2_3
@@ -213,7 +213,7 @@ def test_reduce_forward_one_dim_2() -> None:
 
     # shape (3)
     t_sum_2_expected = tensor([[5], [10], [12]])
-    assert t_summed_2.is_close(t_sum_2_expected).all().item()
+    assert t_summed_2.is_close(t_sum_2_expected).all()  # .item()
 
 
 @pytest.mark.task2_3

@@ -207,7 +207,7 @@ class Sum(Function):
         one = ones(original_shape)
         # Multiply ones by grad_output_reshaped to broadcast the gradient
         grad_input = grad_output_reshaped.f.mul_zip(grad_output_reshaped, one)
-        return grad_input, grad_output.zeros()
+        return grad_input, 0.0
 
 
 class LT(Function):
@@ -249,7 +249,7 @@ class Permute(Function):
     @staticmethod
     def forward(ctx: Context, t1: Tensor, order: Tensor) -> Tensor:
         """Permute tensor to new shape order"""
-        perm = tuple(int(order[i].item()) for i in range(order.size))
+        perm = tuple(int(order[i]) for i in range(order.size))
 
         inverse_perm = [0] * len(perm)
         for i, j in enumerate(perm):

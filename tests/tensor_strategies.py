@@ -119,7 +119,7 @@ def matmul_tensors(
 
 
 def assert_close_tensor(a: Tensor, b: Tensor) -> None:
-    if a.is_close(b).all().item() != 1.0:
+    if a.is_close(b).all() != 1.0:
         assert False, (
             "Tensors are not close \n x.shape=%s \n x=%s \n y.shape=%s \n y=%s \n Diff=%s %s"
             % (a.shape, a, b.shape, b, a - b, a.is_close(b))
