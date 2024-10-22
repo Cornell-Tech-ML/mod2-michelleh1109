@@ -1,6 +1,8 @@
 from hypothesis import settings
 from hypothesis.strategies import floats, integers
 
+from minitorch.operators import is_close
+
 
 settings.register_profile("ci", deadline=None)
 settings.load_profile("ci")
@@ -12,4 +14,4 @@ med_ints = integers(min_value=1, max_value=20)
 
 
 def assert_close(a: float, b: float) -> None:
-    assert abs(a - b) < 1e-2, "Failure x=%f y=%f" % (a, b)
+    assert is_close(a, b), "Failure x=%f y=%f" % (a, b)
