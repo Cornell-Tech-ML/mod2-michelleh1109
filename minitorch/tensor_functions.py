@@ -281,12 +281,9 @@ class View(Function):
     def forward(ctx: Context, a: Tensor, shape: Tensor) -> Tensor:
         """View forward pass"""
         ctx.save_for_backward(a.shape)
-        #shape2 = [int(s) for s in shape.to_numpy().flatten()]
         shape2 = [int(shape[i]) for i in range(shape.size)]
         print("shape2 ", shape2)
         print(a._tensor._storage)
-        # import pdb
-        # pdb.set_trace()
         return minitorch.Tensor.make(
             a._tensor._storage, tuple(shape2), backend=a.backend
         )

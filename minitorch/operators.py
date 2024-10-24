@@ -389,7 +389,9 @@ def zipWith(
     return _zipWith
 
 
-def reduce(fn: Callable[[float,float],float], start: float) -> Callable[[Iterable[float]],float]:
+def reduce(
+    fn: Callable[[float, float], float], start: float
+) -> Callable[[Iterable[float]], float]:
     """Higher-order function that reduces an iterable to a single value using a given function
 
     Parameters
@@ -404,11 +406,13 @@ def reduce(fn: Callable[[float,float],float], start: float) -> Callable[[Iterabl
       A single float reduced down by applying fn to iter
 
     """
-    def _reduce(ls:Iterable[float])-> float:
+
+    def _reduce(ls: Iterable[float]) -> float:
         val = start
         for l in ls:
             val = fn(val, l)
         return val
+
     return _reduce
 
 

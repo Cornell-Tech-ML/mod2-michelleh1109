@@ -33,24 +33,20 @@ class Linear(minitorch.Module):
         self.out_size = out_size
 
     def forward(self, x: minitorch.Tensor):
-        # Reshape weights and input tensor
         batch = x.shape[0]
-        input = x.shape[1]      
+        input = x.shape[1]
         w = self.weights.value.view(1, input, self.out_size) # weight [input, output] -> [batch, input, output]
-        res_x = x.view(batch, input, 1) 
+        res_x = x.view(batch, input, 1)
 
-        # Multiply tensors and reduce along a specific dimension
         out = res_x.f.mul_zip(res_x, w)
         out = out.f.add_reduce(out, 1)
         bias = self.bias.value.view(1, self.out_size)
 
         out = out + bias
         return out
-    
 
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)
-
 
 class TensorTrain:
     def __init__(self, hidden_layers):
