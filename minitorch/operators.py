@@ -389,7 +389,7 @@ def zipWith(
     return _zipWith
 
 
-def reduce(fn: Callable, iter: Iterable[float], init: float) -> float:
+def reduce(fn: Callable[[float,float],float], start: float) -> Callable[[Iterable[float]],float]:
     """Higher-order function that reduces an iterable to a single value using a given function
 
     Parameters
@@ -406,18 +406,12 @@ def reduce(fn: Callable, iter: Iterable[float], init: float) -> float:
       A single float reduced down by applying fn to iter
 
     """
-    lst = list(iter)
-    n = len(lst)
-
-    if n == 0:
-        return init
-
-    if n == 1:
-        return lst[0]
-
-    else:
-        fst, snd, *rest = lst
-        return reduce(fn, [fn(fst, snd)] + rest, init)
+    def _reduce(ls:Iterable[float])-> float:
+        val = start
+        for l in ls:
+            val = fn(val, l)
+        return val
+    return _reduce
 
 
 def negList(iter: Iterable[float]) -> Iterable[float]:
@@ -454,7 +448,7 @@ def addLists(iter_a: Iterable[float], iter_b: Iterable[float]) -> Iterable[float
     return zipWith(add)(iter_a, iter_b)
 
 
-def sum(iter: Iterable[float]) -> float:
+def sum(ls: Iterable[float]) -> float:
     """Sums a list
 
     Parameters
@@ -467,15 +461,15 @@ def sum(iter: Iterable[float]) -> float:
       An integer that is the sum of the iterable
 
     """
-    return reduce(add, iter, 0.0)
+    return reduce(add, 0.0)(ls)
 
 
-def prod(iter: Iterable[float]) -> float:
+def prod(ls: Iterable[float]) -> float:
     """Product of all values in iterable
 
     Parameters
     ----------
-    iter
+    ls
       An iterable list of numbers
 
     Returns
@@ -483,4 +477,4 @@ def prod(iter: Iterable[float]) -> float:
       An integer that is the product of the iterable
 
     """
-    return reduce(mul, iter, 1.0)
+    return reduce(mul, 1.0)(ls)

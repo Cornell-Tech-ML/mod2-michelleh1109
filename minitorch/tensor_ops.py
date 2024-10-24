@@ -68,15 +68,50 @@ class TensorOps:
         # Create an output tensor of shape (m, p)
         out = a.zeros((m, p))
 
-        # Perform matrix multiplication using nested loops
-        for i in range(m):  # Iterate over rows of a
-            for j in range(p):  # Iterate over columns of b
+        # Use tensor operations for matrix multiplication
+        for i in range(m):
+            for j in range(p):
+                # Calculate dot product for position (i,j)
                 sum_val = 0.0
-                for k in range(n):  # Iterate over shared dimension
-                    sum_val += a[i, k] * b[k, j]
-                out[i, j] = sum_val
+                for k in range(n):
+                    # Access elements directly from storage
+                    a_pos = i * n + k
+                    b_pos = k * p + j
+                    sum_val += a._tensor._storage[a_pos] * b._tensor._storage[b_pos]
+                out._tensor._storage[i * p + j] = sum_val
 
         return out
+
+    # @staticmethod
+    # def matrix_multiply(a: Tensor, b: Tensor) -> Tensor:
+    #     print("------------------------")
+    #     print(type(b))
+    #     """Matrix multiply"""
+    #     # Ensure tensors are 2D
+    #     if len(a.shape) != 2 or len(b.shape) != 2:
+    #         raise ValueError("Matrix multiplication requires 2D tensors.")
+
+    #     # Ensure compatible dimensions for matrix multiplication
+    #     if a.shape[1] != b.shape[0]:
+    #         raise ValueError(
+    #             f"Incompatible dimensions: {a.shape} and {b.shape} for matrix multiplication."
+    #         )
+
+    #     m, n = a.shape
+    #     _, p = b.shape
+
+    #     # Create an output tensor of shape (m, p)
+    #     out = a.zeros((m, p))
+
+    #     # Perform matrix multiplication using nested loops
+    #     for i in range(m):  # Iterate over rows of a
+    #         for j in range(p):  # Iterate over columns of b
+    #             sum_val = 0.0
+    #             for k in range(n):  # Iterate over shared dimension
+    #                 sum_val += a[i, k] * b[k, j]
+    #             out[i, j] = sum_val
+
+    #     return out
 
     cuda = False
 

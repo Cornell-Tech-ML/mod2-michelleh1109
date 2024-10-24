@@ -169,7 +169,7 @@ class Log(Function):
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         """Backward pass for Log."""
         (t1,) = ctx.saved_values
-        return grad_output.f.log_back_zip(t1, grad_output)  # unsure
+        return grad_output.f.log_back_zip(t1, grad_output)
 
 
 class Exp(Function):
@@ -257,7 +257,6 @@ class Permute(Function):
 
         ctx.save_for_backward(inverse_perm)
         permuted_tensor_data = t1._tensor.permute(*perm)
-        print(f"perm: {permuted_tensor_data._storage}")
         return minitorch.Tensor.make(
             permuted_tensor_data._storage,
             permuted_tensor_data.shape,
@@ -270,7 +269,6 @@ class Permute(Function):
         perm = ctx.saved_values[0]
         # Calculate the inverse permutation
         permuted_grad_data = grad_output._tensor.permute(*perm)
-        print(f"perm data: {permuted_grad_data._storage}\n")
         return minitorch.Tensor.make(
             permuted_grad_data._storage,
             permuted_grad_data.shape,
@@ -283,7 +281,12 @@ class View(Function):
     def forward(ctx: Context, a: Tensor, shape: Tensor) -> Tensor:
         """View forward pass"""
         ctx.save_for_backward(a.shape)
+        #shape2 = [int(s) for s in shape.to_numpy().flatten()]
         shape2 = [int(shape[i]) for i in range(shape.size)]
+        print("shape2 ", shape2)
+        print(a._tensor._storage)
+        # import pdb
+        # pdb.set_trace()
         return minitorch.Tensor.make(
             a._tensor._storage, tuple(shape2), backend=a.backend
         )
