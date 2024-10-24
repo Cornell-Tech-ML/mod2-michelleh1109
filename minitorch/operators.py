@@ -396,9 +396,7 @@ def reduce(fn: Callable[[float,float],float], start: float) -> Callable[[Iterabl
     ----------
     fn
       function from two values to one value
-    iter
-      iterable object containing floats
-    init
+    start
       float initializing the function when iter is empty
 
     Returns
@@ -453,7 +451,7 @@ def sum(ls: Iterable[float]) -> float:
 
     Parameters
     ----------
-    iter
+    ls
       An iterable list of numbers
 
     Returns
