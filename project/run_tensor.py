@@ -11,11 +11,42 @@ def RParam(*shape):
     r = 2 * (minitorch.rand(shape) - 0.5)
     return minitorch.Parameter(r)
 
-# TODO: Implement for Task 2.5.
+class Network(minitorch.Module):
+    def __init__(self, hidden_size):
+        super().__init__()
+        # Initialize parameters for three linear layers
+        self.layer1 = Linear(2, hidden_size)
+        self.layer2 = Linear(hidden_size, hidden_size)
+        self.layer3 = Linear(hidden_size, 1)
+
+    def forward(self, x):
+        # Forward pass through the three layers
+        middle = self.layer1.forward(x).relu()
+        end = self.layer2.forward(middle).relu()
+        return self.layer3.forward(end).sigmoid()
+
+class Linear(minitorch.Module):
+    def __init__(self, in_size, out_size):
+        super().__init__()
+        self.weights = RParam(in_size, out_size)
+        self.bias = RParam(out_size)
+        self.out_size = out_size
+
+    def forward(self, x: minitorch.Tensor):
+        batch = x.shape[0]
+        input = x.shape[1]
+        w = self.weights.value.view(1, input, self.out_size) # weight [input, output] -> [batch, input, output]
+        res_x = x.view(batch, input, 1)
+
+        out = res_x.f.mul_zip(res_x, w)
+        out = out.f.add_reduce(out, 1)
+        bias = self.bias.value.view(1, self.out_size)
+
+        out = out + bias
+        return out
 
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)
-
 
 class TensorTrain:
     def __init__(self, hidden_layers):
